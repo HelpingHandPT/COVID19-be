@@ -6,13 +6,90 @@ Este documento contém tudo o que um developer precisa de saber para configurar 
 
 Este software foi desenvolvido e otimizado para ser executado com os seguintes requisitos / dependências:
 
-... A Fazer
+* Python >= 3.7
 
 ## Instalação
 
 O código reside no GitHub. Antes de começarem, verifiquem se possuem uma assinatura GPG. Se não possuem ou não sabe como adicionar uma assinatura GPG à vossa conta, vejam a secção [Adicionar assinatura GPG](#adicionar-assinatura-gpg). Além disso, antes de iniciar, verifiquem se instalaram o software necessário.
 
-... A Fazer
+1. Criar uma pasta onde quisermos (chamei de COVIDBE)
+2. Abrir terminal nessa pasta vazia
+3. Criar um virtualenv
+
+Ubuntu e macOS
+
+    python3 -m venv NOME
+
+Windows
+
+
+    python -m venv NOME
+
+(O script cria a pasta de destino especificada e instala o pip (porque não especificamos a opção --without-pip))
+
+4. Ativar o venv
+
+Ubuntu e MacOS
+
+Executa o seguinte commando para saber o nome da shell utilizada no terminal
+    
+    echo $SHELL
+
+No macOS, o padrão é /bin/bash e isto significa que está a ser usada a bash shell. Dependendo da shell, devemos utilizar diferentes commandos para ativar o virtualenv.
+
+No caso da bash shell ou zsh em Linux ou macOS, usar o seguinte comando para ativar o virtualenv
+
+    NOME/bin/activate
+
+No caso de csh ou tcsh shell, corer o seguinte comando para ativar o virtualenv
+    
+    NOME/bin/activate.csh
+
+No caso de fish shell, corer o seguinte comando para ativar o virtualenv
+    
+    NOME/bin/activate.fish
+
+Windows
+    
+    python -m venv NOME
+
+Para desativar, Linux, macOS e Windows
+
+    deactivate
+
+
+5.	Clone do repositório
+   
+  ````
+  git clone git@github.com:tiago-peres/COVID19-be.git
+  ````
+    
+6.	Mudar para o branch develop
+  
+  ````
+  git checkout develop
+  ````
+    
+7.	Criar um branch remoto (para as alterações que formos fazer)
+  
+  ````
+  git checkout -b NOME
+  ````
+    
+8.	Entrar dentro da pasta e instalar os requerimentos (se houver novos) 
+
+   ````
+   cd COVID19-be
+   pip install -r requirements.txt 
+   ````
+    
+9.	Fazer o que quisermos. Depois para enviar as alterações que fizemos para o branch
+   
+   ````
+   git add .
+   git commit -m “MENSAGEM”
+   git push origin BRANCH
+   ````
 
 ## Adicionar assinatura GPG
 
