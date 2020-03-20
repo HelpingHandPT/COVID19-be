@@ -83,7 +83,14 @@ Para desativar, Linux, macOS e Windows
    pip install -r requirements.txt 
    ````
     
-9.	Fazer o que quisermos. Depois para enviar as alterações que fizemos para o branch
+9.	Correr o servidor
+
+   ````
+   python manage.py runserver 
+   ````
+
+
+10. Fazer o que quisermos. Depois para enviar as alterações que fizemos para o branch
    
    ````
    git add .
