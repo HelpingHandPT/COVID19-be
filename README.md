@@ -12,7 +12,7 @@ Este software foi desenvolvido e otimizado para ser executado com os seguintes r
 
 O código reside no GitHub. Antes de começarem, verifiquem se possuem uma assinatura GPG. Se não possuem ou não sabe como adicionar uma assinatura GPG à vossa conta, vejam a secção [Adicionar assinatura GPG](#adicionar-assinatura-gpg). Além disso, antes de iniciar, verifiquem se instalaram o software necessário.
 
-1. Criar uma pasta onde quisermos (chamei de COVIDBE)
+1. Criar uma pasta onde quisermos
 2. Abrir terminal nessa pasta vazia
 3. Criar um virtualenv
 
