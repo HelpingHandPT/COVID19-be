@@ -51,7 +51,7 @@ No caso de fish shell, corer o seguinte comando para ativar o virtualenv
 
 Windows
     
-    python -m venv NOME
+    NOME\Scripts\activate
 
 Para desativar, Linux, macOS e Windows
 
