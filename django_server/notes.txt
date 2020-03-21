@@ -1,0 +1,8 @@
+Ao instalar o django rest swagger tive de alterar algumas coias
+
+Adicionar ao settings.py da api
+REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+
+No ficheiro lib/python3.7/site-packages/rest_framework_swagger/templates/rest_framework_swagger/index.html
+Tive de alterar {% load staticfiles %} para {% load static %} devido á versao do Django ser > 3, eu como n sei mt 
+ainda sobre o assunto, creio que ao instalar o pip, poderia ter escolhido uma versao mais atual ja com esta alteracao
