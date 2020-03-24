@@ -19,10 +19,10 @@ Todas as tarefas a relizar estão explícitas como [Issues](https://github.com/H
 
 Os bugs devem ser reportados igualmente nos [Issues do Repositório](https://github.com/HelpingHandPT/COVID19-be/issues) e devem seguir o seguinte template:
 
-1. Descrição Breve do Problema
-2. Caminho da API (se aplicável)
-3. Passos a Reproduzir (se reproduzível)
-4. Resultado Esperado
+1. **Descrição Breve do Problema**
+2. **Caminho da API (se aplicável)**
+3. **Passos a Reproduzir (se reproduzível)**
+4. **Resultado Esperado**
 
 Antes de reportar bugs, certificar que o método em questão já foi implementado e não está em TODO.
 
