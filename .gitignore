@@ -1,1 +1,5 @@
 **/.idea
+
+# Specific files #
+##################
+django_server/settings.py
