@@ -60,3 +60,4 @@ target/
 # Specific files #
 ##################
 django_server/django_server/settings.py
+**/.idea
