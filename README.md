@@ -24,6 +24,8 @@ Os bugs devem ser reportados igualmente nos [Issues do Repositório](https://git
 3. **Passos a Reproduzir (se reproduzível)**
 4. **Resultado Esperado**
 
+Antes de reportar bugs, certificar que o método em questão já foi implementado e não está em TODO.
+
 # Django mapear modelos da BD
 
 > https://docs.djangoproject.com/en/3.0/howto/legacy-databases/
@@ -37,8 +39,6 @@ Os bugs devem ser reportados igualmente nos [Issues do Repositório](https://git
 1. `python manage.py generate test_app --serializers`
 2. `python manage.py generate test_app --views`
 3. `python manage.py generate test_app --urls`
-
-Antes de reportar bugs, certificar que o método em questão já foi implementado e não está em TODO.
 
 ## Nota
 
