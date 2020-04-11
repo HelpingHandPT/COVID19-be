@@ -26,6 +26,20 @@ Os bugs devem ser reportados igualmente nos [Issues do Repositório](https://git
 
 Antes de reportar bugs, certificar que o método em questão já foi implementado e não está em TODO.
 
+# Django mapear modelos da BD
+
+> https://docs.djangoproject.com/en/3.0/howto/legacy-databases/
+
+`python manage.py inspectdb > models.py`
+
+# Gerador serializers.py, views.py e urls.py
+
+> https://github.com/Brobin/drf-generators
+
+1. `python manage.py generate test_app --serializers`
+2. `python manage.py generate test_app --views`
+3. `python manage.py generate test_app --urls`
+
 ## Nota
 
 Por enquanto, aceitamos todos os commits para branches de desenvolvimento, mas isso mudará em breve. Divirtam-se!
