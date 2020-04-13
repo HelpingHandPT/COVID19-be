@@ -1,8 +1,8 @@
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Make sure each model has one field with primary_key=True ========================> done
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior ========================> done
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
@@ -14,7 +14,7 @@ class Ad(models.Model):
     content = models.CharField(max_length=280, blank=True, null=True)
     creationdate = models.DateField(db_column='creationDate')  # Field name made lowercase.
     lastupdate = models.DateTimeField(db_column='lastUpdate')  # Field name made lowercase.
-    helperid = models.ForeignKey('Helper', models.DO_NOTHING, db_column='helperId')  # Field name made lowercase.
+    helperid = models.ForeignKey('Helper', on_delete=models.CASCADE, db_column='helperId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -22,7 +22,7 @@ class Ad(models.Model):
 
 
 class AdCategory(models.Model):
-    adid = models.OneToOneField(Ad, models.DO_NOTHING, db_column='adId', primary_key=True)  # Field name made lowercase.
+    adid = models.OneToOneField(Ad, on_delete=models.CASCADE, db_column='adId', primary_key=True)  # Field name made lowercase.
     subcategoryid = models.ForeignKey('SubCategory', models.DO_NOTHING, db_column='subCategoryId')  # Field name made lowercase.
 
     class Meta:
@@ -39,7 +39,7 @@ class Address(models.Model):
     zipcode = models.PositiveIntegerField(db_column='zipCode', blank=True, null=True)  # Field name made lowercase.
     lastupdate = models.DateTimeField(db_column='lastUpdate')  # Field name made lowercase.
     verified = models.IntegerField()
-    userid = models.ForeignKey('UserEntity', models.DO_NOTHING, related_name = '+', db_column='userId')  # Field name made lowercase.
+    userid = models.ForeignKey('UserEntity', on_delete=models.CASCADE, related_name = '+', db_column='userId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -49,7 +49,7 @@ class Address(models.Model):
 class AddressProof(models.Model):
     pdfid = models.OneToOneField('Pdf', models.DO_NOTHING, db_column='pdfId', related_name = '+', primary_key=True)  # Field name made lowercase.
     pdftype = models.ForeignKey('Pdf', models.DO_NOTHING, db_column='pdfType', related_name = '+', blank=True, null=True)  # Field name made lowercase.
-    addressid = models.ForeignKey(Address, models.DO_NOTHING, db_column='addressId')  # Field name made lowercase.
+    addressid = models.ForeignKey(Address, on_delete=models.CASCADE, db_column='addressId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -57,7 +57,7 @@ class AddressProof(models.Model):
 
 
 class AtRisk(models.Model):
-    userid = models.OneToOneField('NormalUser', models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField('NormalUser', on_delete=models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
     normaltype = models.ForeignKey('NormalType', models.DO_NOTHING, db_column='normalType', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -76,8 +76,8 @@ class AtRiskCategory(models.Model):
 
 
 class AtRisksFavourite(models.Model):
-    atriskid = models.OneToOneField(AtRisk, models.DO_NOTHING, db_column='atRiskId', primary_key=True)  # Field name made lowercase.
-    helperid = models.ForeignKey('Helper', models.DO_NOTHING, db_column='helperId')  # Field name made lowercase.
+    atriskid = models.OneToOneField(AtRisk, on_delete=models.CASCADE, db_column='atRiskId', primary_key=True)  # Field name made lowercase.
+    helperid = models.ForeignKey('Helper', on_delete=models.CASCADE, db_column='helperId')  # Field name made lowercase.
     dateselected = models.DateField(db_column='dateSelected', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -87,6 +87,7 @@ class AtRisksFavourite(models.Model):
 
 
 class AuthGroup(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     name = models.CharField(unique=True, max_length=150)
 
     class Meta:
@@ -95,7 +96,8 @@ class AuthGroup(models.Model):
 
 
 class AuthGroupPermissions(models.Model):
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
+    group = models.ForeignKey(AuthGroup, on_delete=models.CASCADE)
     permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
 
     class Meta:
@@ -105,8 +107,9 @@ class AuthGroupPermissions(models.Model):
 
 
 class AuthPermission(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     name = models.CharField(max_length=255)
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    content_type = models.ForeignKey('DjangoContentType', on_delete=models.CASCADE)
     codename = models.CharField(max_length=100)
 
     class Meta:
@@ -116,6 +119,7 @@ class AuthPermission(models.Model):
 
 
 class AuthUser(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
     is_superuser = models.IntegerField()
@@ -133,8 +137,9 @@ class AuthUser(models.Model):
 
 
 class AuthUserGroups(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -143,7 +148,8 @@ class AuthUserGroups(models.Model):
 
 
 class AuthUserUserPermissions(models.Model):
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE)
     permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
 
     class Meta:
@@ -178,7 +184,7 @@ class Credential(models.Model):
 class CredentialProof(models.Model):
     pdfid = models.OneToOneField('Pdf', models.DO_NOTHING, db_column='pdfId', related_name = '+', primary_key=True)  # Field name made lowercase.
     pdftype = models.ForeignKey('Pdf', models.DO_NOTHING, db_column='pdfType', related_name = '+', blank=True, null=True)  # Field name made lowercase.
-    credentialid = models.ForeignKey(Credential, models.DO_NOTHING, db_column='credentialId')  # Field name made lowercase.
+    credentialid = models.ForeignKey(Credential, on_delete=models.CASCADE, db_column='credentialId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -186,13 +192,14 @@ class CredentialProof(models.Model):
 
 
 class DjangoAdminLog(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
     object_repr = models.CharField(max_length=200)
     action_flag = models.PositiveSmallIntegerField()
     change_message = models.TextField()
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
@@ -200,6 +207,7 @@ class DjangoAdminLog(models.Model):
 
 
 class DjangoContentType(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     app_label = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
 
@@ -210,6 +218,7 @@ class DjangoContentType(models.Model):
 
 
 class DjangoMigrations(models.Model):
+    id = models.AutoField(unique=True, db_column='id', primary_key=True, max_length=11)
     app = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     applied = models.DateTimeField()
@@ -239,7 +248,7 @@ class ExecutiveType(models.Model):
 
 
 class ExecutiveUser(models.Model):
-    userid = models.OneToOneField('UserEntity', models.DO_NOTHING, db_column='userId', related_name = '+', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField('UserEntity', on_delete=models.CASCADE, db_column='userId', related_name = '+', primary_key=True)  # Field name made lowercase.
     usertype = models.ForeignKey('UserEntity', models.DO_NOTHING, db_column='userType', related_name = '+', blank=True, null=True)  # Field name made lowercase.
     executivetype = models.ForeignKey(ExecutiveType, models.DO_NOTHING, db_column='executiveType')  # Field name made lowercase.
 
@@ -249,7 +258,7 @@ class ExecutiveUser(models.Model):
 
 
 class HealthLog(models.Model):
-    patientid = models.OneToOneField('UserEntity', models.DO_NOTHING, db_column='patientId', primary_key=True)  # Field name made lowercase.
+    patientid = models.OneToOneField('UserEntity', on_delete=models.CASCADE, db_column='patientId', primary_key=True)  # Field name made lowercase.
     monitorid = models.ForeignKey('Monitor', models.DO_NOTHING, db_column='monitorId')  # Field name made lowercase.
 
     class Meta:
@@ -260,7 +269,7 @@ class HealthLog(models.Model):
 class HealthLogNote(models.Model):
     healthlognoteid = models.OneToOneField('Note', models.DO_NOTHING, db_column='healthLogNoteId', related_name = '+', primary_key=True)  # Field name made lowercase.
     notetype = models.ForeignKey('Note', models.DO_NOTHING, db_column='noteType', related_name = '+', blank=True, null=True)  # Field name made lowercase.
-    healthlogid = models.ForeignKey(HealthLog, models.DO_NOTHING, db_column='healthLogId')  # Field name made lowercase.
+    healthlogid = models.ForeignKey(HealthLog, on_delete=models.CASCADE, db_column='healthLogId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -268,7 +277,7 @@ class HealthLogNote(models.Model):
 
 
 class Helper(models.Model):
-    userid = models.OneToOneField('NormalUser', models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField('NormalUser', on_delete=models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
     normaltype = models.ForeignKey('NormalType', models.DO_NOTHING, db_column='normalType', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -287,8 +296,8 @@ class HelperCategory(models.Model):
 
 
 class HelpersFavourite(models.Model):
-    helperid = models.OneToOneField(Helper, models.DO_NOTHING, db_column='helperId', primary_key=True)  # Field name made lowercase.
-    atriskid = models.ForeignKey(AtRisk, models.DO_NOTHING, db_column='atRiskId')  # Field name made lowercase.
+    helperid = models.OneToOneField(Helper, on_delete=models.CASCADE, db_column='helperId', primary_key=True)  # Field name made lowercase.
+    atriskid = models.ForeignKey(AtRisk, on_delete=models.CASCADE, db_column='atRiskId')  # Field name made lowercase.
     dateselected = models.DateField(db_column='dateSelected', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -298,7 +307,7 @@ class HelpersFavourite(models.Model):
 
 
 class Image(models.Model):
-    userid = models.OneToOneField('UserEntity', models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField('UserEntity', on_delete=models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
     title = models.CharField(max_length=40, blank=True, null=True)
     pic = models.TextField()
 
@@ -310,7 +319,7 @@ class Image(models.Model):
 class LogNote(models.Model):
     lognoteid = models.OneToOneField('Note', models.DO_NOTHING, db_column='logNoteId', related_name = '+', primary_key=True)  # Field name made lowercase.
     notetype = models.ForeignKey('Note', models.DO_NOTHING, db_column='noteType', related_name = '+', blank=True, null=True)  # Field name made lowercase.
-    logid = models.ForeignKey('UserLog', models.DO_NOTHING, db_column='logId')  # Field name made lowercase.
+    logid = models.ForeignKey('UserLog', on_delete=models.CASCADE, db_column='logId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -318,7 +327,7 @@ class LogNote(models.Model):
 
 
 class Monitor(models.Model):
-    userid = models.OneToOneField(ExecutiveUser, models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField(ExecutiveUser, on_delete=models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
     executivetype = models.ForeignKey(ExecutiveType, models.DO_NOTHING, db_column='executiveType', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
@@ -336,7 +345,7 @@ class NormalType(models.Model):
 
 
 class NormalUser(models.Model):
-    userid = models.OneToOneField('UserEntity', models.DO_NOTHING, db_column='userId', related_name = '+', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField('UserEntity', on_delete=models.CASCADE, db_column='userId', related_name = '+', primary_key=True)  # Field name made lowercase.
     usertype = models.ForeignKey('UserEntity', models.DO_NOTHING, db_column='userType', related_name = '+', blank=True, null=True)  # Field name made lowercase.
     normaltype = models.ForeignKey(NormalType, models.DO_NOTHING, db_column='normalType')  # Field name made lowercase.
     userdescription = models.CharField(db_column='userDescription', max_length=280, blank=True, null=True)  # Field name made lowercase.
@@ -457,7 +466,7 @@ class Review(models.Model):
 
 
 class SocialMedia(models.Model):
-    userid = models.OneToOneField('UserEntity', models.DO_NOTHING, db_column='userId', related_name = '+', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField('UserEntity', on_delete=models.CASCADE, db_column='userId', related_name = '+', primary_key=True)  # Field name made lowercase.
     facebook = models.CharField(max_length=50, blank=True, null=True)
     linkedin = models.CharField(db_column='linkedIn', max_length=61, blank=True, null=True)  # Field name made lowercase.
     instagram = models.CharField(max_length=30, blank=True, null=True)
@@ -475,7 +484,7 @@ class SubCategory(models.Model):
     subcategoryid = models.CharField(db_column='subCategoryId', primary_key=True, max_length=36)  # Field name made lowercase.
     title = models.CharField(max_length=30)
     subcategorydescription = models.CharField(db_column='subCategoryDescription', max_length=280, blank=True, null=True)  # Field name made lowercase.
-    categoryid = models.ForeignKey(Category, models.DO_NOTHING, db_column='categoryId')  # Field name made lowercase.
+    categoryid = models.ForeignKey(Category, on_delete=models.CASCADE, db_column='categoryId')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -483,7 +492,7 @@ class SubCategory(models.Model):
 
 
 class UserAdmin(models.Model):
-    userid = models.OneToOneField(ExecutiveUser, models.DO_NOTHING, db_column='userId', primary_key=True)  # Field name made lowercase.
+    userid = models.OneToOneField(ExecutiveUser, on_delete=models.CASCADE, db_column='userId', primary_key=True)  # Field name made lowercase.
     executivetype = models.ForeignKey(ExecutiveType, models.DO_NOTHING, db_column='executiveType', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
