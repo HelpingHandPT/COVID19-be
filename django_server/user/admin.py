@@ -28,5 +28,5 @@ class MyUserAdmin(BaseUserAdmin):
     search_fields = ('user_id', 'username', 'first_name', 'last_name', 'email',)
     ordering = ('username', 'last_access', 'creation_date', 'last_update')
     filter_horizontal = ()
-admin.site.register(MyUser, MyUserAdmin)
 
+admin.site.register(MyUser, MyUserAdmin)

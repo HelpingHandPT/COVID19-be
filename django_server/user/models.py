@@ -5,8 +5,8 @@ from django.utils import timezone
 from user import validators
 import datetime
 
-USERNAME_MIN_LENGTH = 5
-USERNAME_MAX_LENGTH = 20
+#USERNAME_MIN_LENGTH = 5
+#USERNAME_MAX_LENGTH = 20
 
 class MyUserManager(BaseUserManager):
     def _create_generic_user(self, email, username, password, first_name, last_name, user_type):
@@ -18,6 +18,8 @@ class MyUserManager(BaseUserManager):
             raise ValueError("First name cannot be empty")
         if not last_name:
             raise ValueError("Last name cannot be empty")
+        if not password:
+            raise ValueError("Password cannot be empty")
 
         user = self.model(
             username=username,
@@ -34,8 +36,8 @@ class MyUserManager(BaseUserManager):
 
     def create_user(self, email, username, password, first_name, last_name):
         return self._create_generic_user(email, username, password, first_name, last_name, 2)
+        
     def create_admin(self, email, username, password, first_name, last_name):
-
         return self._create_generic_user(email, username, password, first_name, last_name, 0)
 
 
@@ -45,7 +47,8 @@ class MyUser(AbstractBaseUser):
         db_table = 'user_entity'
 
     user_id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=USERNAME_MAX_LENGTH, unique=True, validators=[validators.validate_username])
+    #username = models.CharField(max_length=USERNAME_MAX_LENGTH, unique=True, validators=[validators.validate_username])
+    username = models.CharField(max_length=20, unique=True)
     password = models.CharField(max_length=256)
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
