@@ -20,13 +20,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+<<<<<<< HEAD
 SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)*f#v9*8p41w+d4m59h#n%3p*l='
+=======
+SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)f#v98p41w+d4m59h#n%3p*l='
+>>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
+<<<<<<< HEAD
+=======
+AUTH_USER_MODEL = 'user.MyUser'
+>>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
 
 # Application definition
 
@@ -40,6 +48,11 @@ INSTALLED_APPS = [
     'rest_framework',
 	'drf_yasg',
     'test_app',
+<<<<<<< HEAD
+=======
+    'drf_generators',
+    'user'
+>>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
 ]
 
 MIDDLEWARE = [
@@ -79,12 +92,24 @@ WSGI_APPLICATION = 'django_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
+<<<<<<< HEAD
         'NAME': 'hh_db',
+=======
+        'NAME': 'hh_unstable',    # to test locally using an empty db
+>>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
         'USER': 'root',
         'PASSWORD': '',
     }
 }
 
+<<<<<<< HEAD
+=======
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 15
+}
+
+>>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
