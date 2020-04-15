@@ -31,7 +31,7 @@ class MyUserManager(BaseUserManager):
             is_active=False
         )
         user.set_password(password)
-        user.save(user=self._db)
+        user.save(using=self._db)
         return user
 
     def create_user(self, email, username, password, first_name, last_name):
