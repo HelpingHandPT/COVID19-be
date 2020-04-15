@@ -39,5 +39,5 @@ urlpatterns = [
 
     path('test/', include('test_app.urls')),
     path('admin/', admin.site.urls),
-    #path('user/', include('user.urls'))
+    path('user/', include('user.urls'))
 ]
