@@ -1,41 +1,25 @@
-from rest_framework.routers import SimpleRouter
+from django.urls import path, include
 from test_app import views
+from django.conf.urls import url
+from rest_framework.routers import DefaultRouter
 
-
-router = SimpleRouter()
+router = DefaultRouter()
 
 router.register(r'ad', views.AdViewSet, 'Ad')
 router.register(r'adcategory', views.AdCategoryViewSet, 'AdCategory')
 router.register(r'address', views.AddressViewSet, 'Address')
 router.register(r'addressproof', views.AddressProofViewSet, 'AddressProof')
-router.register(r'atrisk', views.AtRiskViewSet, 'AtRisk')
 router.register(r'atriskcategory', views.AtRiskCategoryViewSet, 'AtRiskCategory')
 router.register(r'atrisksfavourite', views.AtRisksFavouriteViewSet, 'AtRisksFavourite')
-router.register(r'authgroup', views.AuthGroupViewSet, 'AuthGroup')
-router.register(r'authgrouppermissions', views.AuthGroupPermissionsViewSet, 'AuthGroupPermissions')
-router.register(r'authpermission', views.AuthPermissionViewSet, 'AuthPermission')
-router.register(r'authuser', views.AuthUserViewSet, 'AuthUser')
-router.register(r'authusergroups', views.AuthUserGroupsViewSet, 'AuthUserGroups')
-router.register(r'authuseruserpermissions', views.AuthUserUserPermissionsViewSet, 'AuthUserUserPermissions')
 router.register(r'category', views.CategoryViewSet, 'Category')
 router.register(r'credential', views.CredentialViewSet, 'Credential')
 router.register(r'credentialproof', views.CredentialProofViewSet, 'CredentialProof')
-router.register(r'djangoadminlog', views.DjangoAdminLogViewSet, 'DjangoAdminLog')
-router.register(r'djangocontenttype', views.DjangoContentTypeViewSet, 'DjangoContentType')
-router.register(r'djangomigrations', views.DjangoMigrationsViewSet, 'DjangoMigrations')
-router.register(r'djangosession', views.DjangoSessionViewSet, 'DjangoSession')
-router.register(r'executivetype', views.ExecutiveTypeViewSet, 'ExecutiveType')
-router.register(r'executiveuser', views.ExecutiveUserViewSet, 'ExecutiveUser')
 router.register(r'healthlog', views.HealthLogViewSet, 'HealthLog')
 router.register(r'healthlognote', views.HealthLogNoteViewSet, 'HealthLogNote')
-router.register(r'helper', views.HelperViewSet, 'Helper')
 router.register(r'helpercategory', views.HelperCategoryViewSet, 'HelperCategory')
 router.register(r'helpersfavourite', views.HelpersFavouriteViewSet, 'HelpersFavourite')
 router.register(r'image', views.ImageViewSet, 'Image')
 router.register(r'lognote', views.LogNoteViewSet, 'LogNote')
-router.register(r'monitor', views.MonitorViewSet, 'Monitor')
-router.register(r'normaltype', views.NormalTypeViewSet, 'NormalType')
-router.register(r'normaluser', views.NormalUserViewSet, 'NormalUser')
 router.register(r'note', views.NoteViewSet, 'Note')
 router.register(r'notetype', views.NoteTypeViewSet, 'NoteType')
 router.register(r'payment', views.PaymentViewSet, 'Payment')
@@ -47,10 +31,10 @@ router.register(r'requestcategory', views.RequestCategoryViewSet, 'RequestCatego
 router.register(r'review', views.ReviewViewSet, 'Review')
 router.register(r'socialmedia', views.SocialMediaViewSet, 'SocialMedia')
 router.register(r'subcategory', views.SubCategoryViewSet, 'SubCategory')
-router.register(r'useradmin', views.UserAdminViewSet, 'UserAdmin')
-router.register(r'userentity', views.UserEntityViewSet, 'UserEntity')
 router.register(r'userlog', views.UserLogViewSet, 'UserLog')
 router.register(r'usernote', views.UserNoteViewSet, 'UserNote')
-router.register(r'usertype', views.UserTypeViewSet, 'UserType')
 
-urlpatterns = router.urls
+urlpatterns = [
+    path('',include(router.urls)),
+    url(r'api/users', views.MyUserCreate.as_view(), name='user-create'),
+]

@@ -20,12 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)*f#v9*8p41w+d4m59h#n%3p*l='
+SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)f#v98p41w+d4m59h#n%3p*l='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+AUTH_USER_MODEL = 'test_app.MyUser'
 
 
 # Application definition
@@ -38,8 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-	'drf_yasg',
+	  'drf_yasg',
     'test_app',
+    'drf_generators'
 ]
 
 MIDDLEWARE = [
@@ -79,12 +82,16 @@ WSGI_APPLICATION = 'django_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hh_db',
+        'NAME': 'unstable_integration',    # to test locally using an empty db
         'USER': 'root',
         'PASSWORD': '',
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 15
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

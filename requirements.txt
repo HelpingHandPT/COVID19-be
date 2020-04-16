@@ -25,6 +25,9 @@ mccabe==0.6.1
 mysqlclient==1.4.6
 packaging==20.3
 pylint==2.4.4
+pylint-django==2.0.15
+pylint-plugin-utils==0.6
+PyMySQL==0.9.3
 pyparsing==2.4.6
 pyrsistent==0.15.7
 pytz==2019.3
