@@ -59,4 +59,5 @@ target/
 
 # Specific files #
 ##################
-django_server/django_server/settings.py
+# django_server/django_server/settings.py
+**/.idea

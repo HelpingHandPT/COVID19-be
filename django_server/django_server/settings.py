@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = 'test_app.MyUser'
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-	'drf_yasg',
+	  'drf_yasg',
     'test_app',
     'drf_generators'
 ]
@@ -91,7 +92,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 15
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

@@ -59,7 +59,7 @@ class MyUser(AbstractBaseUser):
         (201, 'helper'),
         (256, 'unspecified'),
     )
-
+    
     user_id = models.AutoField(primary_key=True, db_column='userId')
     #username = models.CharField(max_length=USERNAME_MAX_LENGTH, unique=True, validators=[validators.validate_username])
     username = models.CharField(unique=True, max_length=20)
@@ -86,7 +86,6 @@ class MyUser(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
-
 
 class Ad(models.Model):#===============================================================> READY
     ad_id = models.CharField(db_column='adId', primary_key=True, max_length=36)
@@ -132,11 +131,11 @@ class AtRiskCategory(models.Model):#============================================
     atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': 200}, primary_key=True)
     subcategory_id = models.ForeignKey(SubCategory, models.DO_NOTHING, db_column='subCategoryId')
 
+
     class Meta:
      #   managed = False
         db_table = 'at_risk_category'
         unique_together = (('atrisk_id', 'subcategory_id'),)
-
 
 class AtRisksFavourite(models.Model):#===============================================================> READY
     atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': 200}, primary_key=True)
@@ -151,6 +150,7 @@ class AtRisksFavourite(models.Model):#==========================================
 class PdfType(models.Model):#===============================================================> READY
     pdf_type_id = models.IntegerField(db_column='pdfTypeId', primary_key=True)
     pdf_type = models.CharField(db_column='pdfType', max_length=15)
+
 
     class Meta:
      #   managed = False
@@ -181,7 +181,6 @@ class Address(models.Model):#===================================================
       #  managed = False
         db_table = 'address'
 
-
 class AddressProof(models.Model):#===============================================================> READY
     pdf_id = models.OneToOneField(Pdf, models.DO_NOTHING, db_column='pdfId', related_name = '+', primary_key=True)
     pdf_type = models.ForeignKey(Pdf, models.DO_NOTHING, db_column='pdfType', related_name = '+', blank=True, null=True)
@@ -190,7 +189,6 @@ class AddressProof(models.Model):#==============================================
     class Meta:
       #  managed = False
         db_table = 'address_proof'
-
 
 class Credential(models.Model):#===============================================================> READY
     credential_id = models.CharField(db_column='credentialId', primary_key=True, max_length=36)
@@ -220,7 +218,6 @@ class HealthLog(models.Model):#=================================================
     class Meta:
       #  managed = False
         db_table = 'health_log'
-
 
 class NoteType(models.Model):#===============================================================> READY
     note_type_id = models.IntegerField(db_column='noteTypeId', primary_key=True)
@@ -261,7 +258,6 @@ class HelperCategory(models.Model):#============================================
         db_table = 'helper_category'
         unique_together = (('helper_id', 'subcategory_id'),)
 
-
 class HelpersFavourite(models.Model):#===============================================================> READY
     helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': 201}, primary_key=True)
     atrisk_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='atRiskId',related_name='+', limit_choices_to={'user_type': 200})
@@ -271,7 +267,6 @@ class HelpersFavourite(models.Model):#==========================================
       #  managed = False
         db_table = 'helpers_favourite'
         unique_together = (('helper_id', 'atrisk_id'),)
-
 
 class Image(models.Model):#===============================================================> READY
     user_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='userId', primary_key=True)
@@ -299,7 +294,6 @@ class UserLog(models.Model):#===================================================
       #  managed = False
         db_table = 'user_log'
 
-
 class UserNote(models.Model):#===============================================================> READY
     user_note_id = models.OneToOneField(Note, models.DO_NOTHING, db_column='userNoteId', related_name = '+', primary_key=True)
     note_type = models.ForeignKey(Note, models.DO_NOTHING, db_column='noteType', blank=True, null=True)
@@ -309,8 +303,6 @@ class UserNote(models.Model):#==================================================
      #   managed = False
         db_table = 'user_note'
 
-
-
 class LogNote(models.Model):#===============================================================> READY
     log_note_id = models.OneToOneField(Note, models.DO_NOTHING, db_column='logNoteId', related_name = '+', primary_key=True)
     note_type = models.ForeignKey(Note, models.DO_NOTHING, db_column='noteType', related_name = '+', blank=True, null=True)
@@ -319,7 +311,6 @@ class LogNote(models.Model):#===================================================
     class Meta:
      #   managed = False
         db_table = 'log_note'
-
 
 class Request(models.Model):#===============================================================> READY
     request_id = models.CharField(db_column='requestId', primary_key=True, max_length=36)
@@ -384,7 +375,6 @@ class Review(models.Model):#====================================================
       #  managed = False
         db_table = 'review'
 
-
 class SocialMedia(models.Model):#===============================================================> READY
     user_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='userId', related_name = '+', primary_key=True)
     facebook = models.CharField(max_length=50, blank=True, null=True)
@@ -398,5 +388,3 @@ class SocialMedia(models.Model):#===============================================
     class Meta:
       #  managed = False
         db_table = 'social_media'
-
-
