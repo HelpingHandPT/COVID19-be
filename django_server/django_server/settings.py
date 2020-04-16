@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'user.MyUser'
+AUTH_USER_MODEL = 'test_app.MyUser'
 
 # Application definition
 
@@ -41,8 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 	'drf_yasg',
     'test_app',
-    'drf_generators',
-    'user'
+    'drf_generators'
 ]
 
 MIDDLEWARE = [
@@ -82,7 +81,7 @@ WSGI_APPLICATION = 'django_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hh_unstable',    # to test locally using an empty db
+        'NAME': 'unstable_integration',    # to test locally using an empty db
         'USER': 'root',
         'PASSWORD': '',
     }
