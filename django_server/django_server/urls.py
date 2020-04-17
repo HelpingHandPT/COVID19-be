@@ -18,6 +18,7 @@ from django.urls import include, path, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -33,10 +34,17 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    # Swagger
 	re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
 	re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 	re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
+    # JWT Token
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain'),
+    # get a new token before the old expires.
+    path('api/token/refresh/', TokenRefreshView.as_view, name='token_refresh'),
+
+    # App (test_app) and Admin
     path('test_app/', include('test_app.urls')),
     path('admin/', admin.site.urls)
 ]

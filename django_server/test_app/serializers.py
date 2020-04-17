@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, UserNote, MyUser
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from django.contrib.auth.hashers import make_password
 
 
 class AdSerializer(ModelSerializer):
@@ -195,6 +196,20 @@ class UserNoteSerializer(ModelSerializer):
         model = UserNote
         fields = '__all__'
 
+class MyUserViewsetSerializer(ModelSerializer):
+
+    class Meta:
+        model = MyUser
+        fields = '__all__'
+
+    def validate_password(self, value: str) -> str:
+        """
+        Hash value passed by user.
+
+        :param value: password of a user
+        :return: a hashed version of the password
+        """
+        return make_password(value)
 
 '''
 FROM: USER APP
@@ -225,7 +240,8 @@ class MyUserSerializer(serializers.ModelSerializer):
             )
 
     def create_atrisk(self, validated_data):
-        user = MyUser.objects.create_atrisk(validated_data['email'], validated_data['username'], validated_data['password'],
+        password = make_password(validated_data['password'])
+        user = MyUser.objects.create_atrisk(validated_data['email'], validated_data['username'], password,
         validated_data['first_name'], validated_data['last_name'])
         return user
 

@@ -33,8 +33,12 @@ router.register(r'socialmedia', views.SocialMediaViewSet, 'SocialMedia')
 router.register(r'subcategory', views.SubCategoryViewSet, 'SubCategory')
 router.register(r'userlog', views.UserLogViewSet, 'UserLog')
 router.register(r'usernote', views.UserNoteViewSet, 'UserNote')
+router.register(r'user', views.MyUserCreateViewSet, 'MyUserCreate')
 
 urlpatterns = [
     path('',include(router.urls)),
     url(r'api/users', views.MyUserCreate.as_view(), name='user-create'),
+    
+    #test JWT Auth
+    path('hello/', views.HelloView.as_view(), name='hello'),
 ]
