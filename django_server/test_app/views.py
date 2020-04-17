@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from test_app.serializers import AdSerializer, AdCategorySerializer, AddressSerializer, AddressProofSerializer, AtRiskCategorySerializer, AtRisksFavouriteSerializer, CategorySerializer, CredentialSerializer, CredentialProofSerializer, HealthLogSerializer, HealthLogNoteSerializer, HelperCategorySerializer, HelpersFavouriteSerializer, ImageSerializer, LogNoteSerializer, NoteSerializer, NoteTypeSerializer, PaymentSerializer, PaymentProofSerializer, PdfSerializer, PdfTypeSerializer, RequestSerializer, RequestCategorySerializer, ReviewSerializer, SocialMediaSerializer, SubCategorySerializer, UserLogSerializer, UserNoteSerializer, MyUserSerializer
+from test_app.serializers import AdSerializer, AdCategorySerializer, AddressSerializer, AddressProofSerializer, AtRiskCategorySerializer, AtRisksFavouriteSerializer, CategorySerializer, CredentialSerializer, CredentialProofSerializer, HealthLogSerializer, HealthLogNoteSerializer, HelperCategorySerializer, HelpersFavouriteSerializer, ImageSerializer, LogNoteSerializer, NoteSerializer, NoteTypeSerializer, PaymentSerializer, PaymentProofSerializer, PdfSerializer, PdfTypeSerializer, RequestSerializer, RequestCategorySerializer, ReviewSerializer, SocialMediaSerializer, SubCategorySerializer, UserLogSerializer, UserNoteSerializer, MyUserSerializer, MyUserViewsetSerializer
 from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, UserNote, MyUser
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 
 class AdViewSet(ViewSet):
@@ -1124,3 +1125,55 @@ class MyUserCreate(APIView):
             user = serializer.save()
             if user:
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+class MyUserCreateViewSet(ViewSet):
+    """ 
+    Creates the user. 
+    """
+    def list(self, request):
+        queryset = MyUser.objects.order_by('pk')
+        serializer = MyUserViewsetSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        serializer = MyUserViewsetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
+    def retrieve(self, request, pk=None):
+        queryset = MyUser.objects.all()
+        item = get_object_or_404(queryset, pk=pk)
+        serializer = MyUserViewsetSerializer(item)
+        return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        try:
+            item = MyUser.objects.get(pk=pk)
+        except MyUser.DoesNotExist:
+            return Response(status=404)
+        serializer = MyUserViewsetSerializer(item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+
+    def destroy(self, request, pk=None):
+        try:
+            item = MyUser.objects.get(pk=pk)
+        except MyUser.DoesNotExist:
+            return Response(status=404)
+        item.delete()
+        return Response(status=204)
+
+
+""" 
+Test JWT Auth. 
+"""
+class HelloView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        content = {'message': 'Hello, World!'}
+        return Response(content)
