@@ -1,5 +1,8 @@
 from rest_framework.serializers import ModelSerializer
-from test_app.models import Ad, AdCategory, Address, AddressProof, AtRisk, AtRiskCategory, AtRisksFavourite, AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions, Category, Credential, CredentialProof, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession, ExecutiveType, ExecutiveUser, HealthLog, HealthLogNote, Helper, HelperCategory, HelpersFavourite, Image, LogNote, Monitor, NormalType, NormalUser, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserAdmin, UserEntity, UserLog, UserNote, UserType
+from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, UserNote, MyUser
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+from django.contrib.auth.hashers import make_password
 
 
 class AdSerializer(ModelSerializer):
@@ -30,13 +33,6 @@ class AddressProofSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class AtRiskSerializer(ModelSerializer):
-
-    class Meta:
-        model = AtRisk
-        fields = '__all__'
-
-
 class AtRiskCategorySerializer(ModelSerializer):
 
     class Meta:
@@ -49,49 +45,6 @@ class AtRisksFavouriteSerializer(ModelSerializer):
     class Meta:
         model = AtRisksFavourite
         fields = '__all__'
-
-
-class AuthGroupSerializer(ModelSerializer):
-
-    class Meta:
-        model = AuthGroup
-        fields = '__all__'
-
-
-class AuthGroupPermissionsSerializer(ModelSerializer):
-
-    class Meta:
-        model = AuthGroupPermissions
-        fields = '__all__'
-
-
-class AuthPermissionSerializer(ModelSerializer):
-
-    class Meta:
-        model = AuthPermission
-        fields = '__all__'
-
-
-class AuthUserSerializer(ModelSerializer):
-
-    class Meta:
-        model = AuthUser
-        fields = '__all__'
-
-
-class AuthUserGroupsSerializer(ModelSerializer):
-
-    class Meta:
-        model = AuthUserGroups
-        fields = '__all__'
-
-
-class AuthUserUserPermissionsSerializer(ModelSerializer):
-
-    class Meta:
-        model = AuthUserUserPermissions
-        fields = '__all__'
-
 
 class CategorySerializer(ModelSerializer):
 
@@ -113,49 +66,6 @@ class CredentialProofSerializer(ModelSerializer):
         model = CredentialProof
         fields = '__all__'
 
-
-class DjangoAdminLogSerializer(ModelSerializer):
-
-    class Meta:
-        model = DjangoAdminLog
-        fields = '__all__'
-
-
-class DjangoContentTypeSerializer(ModelSerializer):
-
-    class Meta:
-        model = DjangoContentType
-        fields = '__all__'
-
-
-class DjangoMigrationsSerializer(ModelSerializer):
-
-    class Meta:
-        model = DjangoMigrations
-        fields = '__all__'
-
-
-class DjangoSessionSerializer(ModelSerializer):
-
-    class Meta:
-        model = DjangoSession
-        fields = '__all__'
-
-
-class ExecutiveTypeSerializer(ModelSerializer):
-
-    class Meta:
-        model = ExecutiveType
-        fields = '__all__'
-
-
-class ExecutiveUserSerializer(ModelSerializer):
-
-    class Meta:
-        model = ExecutiveUser
-        fields = '__all__'
-
-
 class HealthLogSerializer(ModelSerializer):
 
     class Meta:
@@ -168,14 +78,6 @@ class HealthLogNoteSerializer(ModelSerializer):
     class Meta:
         model = HealthLogNote
         fields = '__all__'
-
-
-class HelperSerializer(ModelSerializer):
-
-    class Meta:
-        model = Helper
-        fields = '__all__'
-
 
 class HelperCategorySerializer(ModelSerializer):
 
@@ -203,28 +105,6 @@ class LogNoteSerializer(ModelSerializer):
     class Meta:
         model = LogNote
         fields = '__all__'
-
-
-class MonitorSerializer(ModelSerializer):
-
-    class Meta:
-        model = Monitor
-        fields = '__all__'
-
-
-class NormalTypeSerializer(ModelSerializer):
-
-    class Meta:
-        model = NormalType
-        fields = '__all__'
-
-
-class NormalUserSerializer(ModelSerializer):
-
-    class Meta:
-        model = NormalUser
-        fields = '__all__'
-
 
 class NoteSerializer(ModelSerializer):
 
@@ -303,20 +183,6 @@ class SubCategorySerializer(ModelSerializer):
         fields = '__all__'
 
 
-class UserAdminSerializer(ModelSerializer):
-
-    class Meta:
-        model = UserAdmin
-        fields = '__all__'
-
-
-class UserEntitySerializer(ModelSerializer):
-
-    class Meta:
-        model = UserEntity
-        fields = '__all__'
-
-
 class UserLogSerializer(ModelSerializer):
 
     class Meta:
@@ -330,9 +196,56 @@ class UserNoteSerializer(ModelSerializer):
         model = UserNote
         fields = '__all__'
 
-
-class UserTypeSerializer(ModelSerializer):
+class MyUserViewsetSerializer(ModelSerializer):
 
     class Meta:
-        model = UserType
+        model = MyUser
         fields = '__all__'
+
+    def validate_password(self, value: str) -> str:
+        """
+        Hash value passed by user.
+
+        :param value: password of a user
+        :return: a hashed version of the password
+        """
+        return make_password(value)
+
+'''
+FROM: USER APP
+'''
+class MyUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+            required=True, # make sure email is provided
+            validators=[UniqueValidator(queryset=MyUser.objects.all())] # make sure email is unique
+            )
+    username = serializers.CharField(
+            required=True,
+            validators=[UniqueValidator(queryset=MyUser.objects.all())],
+            min_length=5,
+            max_length=20
+            )
+    password = serializers.CharField(
+            write_only=True,
+            required=True,
+            max_length=256
+            )
+    first_name = serializers.CharField(
+            required=True,
+            max_length=25
+            )
+    last_name = serializers.CharField(
+            required=True,
+            max_length=25
+            )
+
+    def create_atrisk(self, validated_data):
+        password = make_password(validated_data['password'])
+        user = MyUser.objects.create_atrisk(validated_data['email'], validated_data['username'], password,
+        validated_data['first_name'], validated_data['last_name'])
+        return user
+
+
+    class Meta:
+        model = MyUser
+        fields = ('user_id', 'email', 'username', 'password', 'first_name', 'last_name')

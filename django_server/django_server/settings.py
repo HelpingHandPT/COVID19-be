@@ -21,10 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 <<<<<<< HEAD
+<<<<<<< HEAD
 SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)*f#v9*8p41w+d4m59h#n%3p*l='
 =======
 SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)f#v98p41w+d4m59h#n%3p*l='
 >>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
+=======
+SECRET_KEY = 'ld5a8j)tm3at5yz5h-d(s++)f#v98p41w+d4m59h#n%3p*l='
+>>>>>>> 94ece97c71f1c4a76841098d8df9ed9ffa442034
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,9 +36,14 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 AUTH_USER_MODEL = 'user.MyUser'
 >>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
+=======
+AUTH_USER_MODEL = 'test_app.MyUser'
+
+>>>>>>> 94ece97c71f1c4a76841098d8df9ed9ffa442034
 
 # Application definition
 
@@ -46,13 +55,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-	'drf_yasg',
+	  'drf_yasg',
     'test_app',
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     'drf_generators',
     'user'
 >>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
+=======
+    'drf_generators'
+>>>>>>> 94ece97c71f1c4a76841098d8df9ed9ffa442034
 ]
 
 MIDDLEWARE = [
@@ -93,23 +106,39 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
 <<<<<<< HEAD
+<<<<<<< HEAD
         'NAME': 'hh_db',
 =======
         'NAME': 'hh_unstable',    # to test locally using an empty db
 >>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
+=======
+        'NAME': 'unstable_integration',    # to test locally using an empty db
+>>>>>>> 94ece97c71f1c4a76841098d8df9ed9ffa442034
         'USER': 'root',
         'PASSWORD': '',
     }
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 94ece97c71f1c4a76841098d8df9ed9ffa442034
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 15
+    'PAGE_SIZE': 15,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
 }
 
+<<<<<<< HEAD
 >>>>>>> 60c466ca4330c47292fdb03c3abb89d7cee3d3bf
+=======
+SIMPLE_JWT = {
+    'USER_ID_FIELD': 'user_id'
+}
+>>>>>>> 94ece97c71f1c4a76841098d8df9ed9ffa442034
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
