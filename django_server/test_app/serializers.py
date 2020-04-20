@@ -249,3 +249,9 @@ class MyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
         fields = ('user_id', 'email', 'username', 'password', 'first_name', 'last_name')
+
+'''
+Password reset
+'''
+class CustomTokenSerializer(serializers.Serializer):
+    token = serializers.CharField()
