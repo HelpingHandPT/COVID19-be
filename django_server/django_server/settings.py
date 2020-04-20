@@ -32,6 +32,7 @@ AUTH_USER_MODEL = 'test_app.MyUser'
 # Application definition
 
 INSTALLED_APPS = [
+    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
