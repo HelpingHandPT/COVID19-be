@@ -10,6 +10,7 @@ from test_app.serializers import AdSerializer, AdCategorySerializer, AddressSeri
 from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, UserNote, MyUser
 from rest_framework import parsers, renderers, status
 from rest_framework.permissions import IsAuthenticated
+from django.core.mail import EmailMultiAlternatives
 
 
 class AdViewSet(ViewSet):
@@ -1202,8 +1203,8 @@ class CustomPasswordResetView:
         }
 
         # render email text
-        email_html_message = render_to_string('user_reset_password.html', context)
-        email_plaintext_message = render_to_string('user_reset_password.txt', context)
+        email_html_message = render_to_string('email/user_reset_password.html', context)
+        email_plaintext_message = render_to_string('email/user_reset_password.txt', context)
 
         msg = EmailMultiAlternatives(
             # title:
