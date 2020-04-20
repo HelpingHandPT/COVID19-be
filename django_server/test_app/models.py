@@ -52,12 +52,18 @@ class MyUser(AbstractBaseUser):
         # managed = False
         db_table = 'user_entity'
 
+    ADMIN = 0
+    MONITOR = 100
+    ATRISK = 200
+    HELPER = 201
+    UNSPECIFIED = 25
+
     USER_TYPE_CHOICES = (
-        (0, 'admin'),
-        (100, 'monitor'),
-        (200, 'atRisk'),
-        (201, 'helper'),
-        (256, 'unspecified'),
+        (ADMIN, 'admin'),
+        (MONITOR, 'monitor'),
+        (ATRISK, 'atRisk'),
+        (HELPER, 'helper'),
+        (UNSPECIFIED, 'unspecified'),
     )
     
     user_id = models.AutoField(primary_key=True, db_column='userId')
@@ -70,7 +76,7 @@ class MyUser(AbstractBaseUser):
     last_access = models.DateField(db_column='lastAccess', default=datetime.date.today)
     creation_date = models.DateTimeField(db_column='creationDate', default=timezone.now)
     last_update = models.DateField(db_column='lastUpdate', default=datetime.date.today)
-    user_type = models.IntegerField(db_column='userType', choices=USER_TYPE_CHOICES, null=True)
+    user_type = models.IntegerField(db_column='userType', choices=USER_TYPE_CHOICES, blank=True, default=UNSPECIFIED)
     is_staff = models.BooleanField(db_column='isStaff', default=False)
     is_active = models.BooleanField(default=True, db_column='activeStatus')
 
@@ -93,7 +99,7 @@ class Ad(models.Model):#========================================================
     content = models.CharField(max_length=280, blank=True, null=True)
     creation_date = models.DateField(db_column='creationDate')
     last_update = models.DateTimeField(db_column='lastUpdate')
-    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': 201})
+    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': MyUser.HELPER})
 
     class Meta:
        # managed = False
@@ -128,7 +134,7 @@ class AdCategory(models.Model):#================================================
         unique_together = (('ad_id', 'subcategory_id'),)
 
 class AtRiskCategory(models.Model):#===============================================================> READY
-    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': 200}, primary_key=True)
+    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': MyUser.ATRISK}, primary_key=True)
     subcategory_id = models.ForeignKey(SubCategory, models.DO_NOTHING, db_column='subCategoryId')
 
 
@@ -138,8 +144,8 @@ class AtRiskCategory(models.Model):#============================================
         unique_together = (('atrisk_id', 'subcategory_id'),)
 
 class AtRisksFavourite(models.Model):#===============================================================> READY
-    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': 200}, primary_key=True)
-    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', related_name='+', limit_choices_to={'user_type': 201})
+    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': MyUser.ATRISK}, primary_key=True)
+    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', related_name='+', limit_choices_to={'user_type': MyUser.HELPER})
     date_selected = models.DateField(db_column='dateSelected', blank=True, null=True)
 
     class Meta:
@@ -212,8 +218,8 @@ class CredentialProof(models.Model):#===========================================
         db_table = 'credential_proof'
 
 class HealthLog(models.Model):#===============================================================> READY
-    patient_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='userId', limit_choices_to={'user_type': 200, 'user_type': 201}, primary_key=True)
-    monitor_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='monitorId',related_name='+', limit_choices_to={'user_type': 100})
+    patient_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='userId', limit_choices_to={'user_type__in': (MyUser.HELPER, MyUser.ATRISK)}, primary_key=True)
+    monitor_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='monitorId',related_name='+', limit_choices_to={'user_type': MyUser.MONITOR})
 
     class Meta:
       #  managed = False
@@ -250,7 +256,7 @@ class HealthLogNote(models.Model):#=============================================
         db_table = 'health_log_note'
 
 class HelperCategory(models.Model):#===============================================================> READY
-    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': 201}, primary_key=True)
+    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': MyUser.HELPER}, primary_key=True)
     subcategory_id = models.ForeignKey(SubCategory, models.DO_NOTHING, db_column='subCategoryId')
 
     class Meta:
@@ -259,8 +265,8 @@ class HelperCategory(models.Model):#============================================
         unique_together = (('helper_id', 'subcategory_id'),)
 
 class HelpersFavourite(models.Model):#===============================================================> READY
-    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': 201}, primary_key=True)
-    atrisk_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='atRiskId',related_name='+', limit_choices_to={'user_type': 200})
+    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': MyUser.HELPER}, primary_key=True)
+    atrisk_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='atRiskId',related_name='+', limit_choices_to={'user_type': MyUser.ATRISK})
     date_selected = models.DateField(db_column='dateSelected', blank=True, null=True)
 
     class Meta:
@@ -320,8 +326,8 @@ class Request(models.Model):#===================================================
     request_description = models.CharField(db_column='requestDescription', max_length=280, blank=True, null=True)
     expiration_date = models.DateField(db_column='expirationDate', blank=True, null=True)
     done = models.IntegerField(blank=True, null=True)
-    atrisk = models.ForeignKey(MyUser, models.DO_NOTHING, limit_choices_to={'user_type': 200})
-    helper = models.ForeignKey(MyUser, models.DO_NOTHING,related_name='+', limit_choices_to={'user_type': 201})
+    atrisk = models.ForeignKey(MyUser, models.DO_NOTHING, limit_choices_to={'user_type': MyUser.ATRISK})
+    helper = models.ForeignKey(MyUser, models.DO_NOTHING,related_name='+', limit_choices_to={'user_type': MyUser.HELPER})
 
     class Meta:
       #  managed = False

@@ -41,4 +41,8 @@ urlpatterns = [
     
     #test JWT Auth
     path('hello/', views.HelloView.as_view(), name='hello'),
+
+    # Password reset
+    path('reset-password/verify-token/', views.CustomPasswordTokenVerificationView.as_view(), name='password_reset_verify_token'),
+    path('reset-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
 ]
