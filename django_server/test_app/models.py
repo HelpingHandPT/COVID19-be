@@ -3,48 +3,50 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from test_app import validators
+from enum import Enum
 import datetime
 
 #USERNAME_MIN_LENGTH = 5
 #USERNAME_MAX_LENGTH = 20
 
+class UserType(Enum):
+    ADMIN = 0
+    MONITOR = 100
+    ATRISK = 200
+    HELPER = 201
+    UNSPECIFIED = 25
+
+    def __int__(self):
+        return self.value
+
+
 class MyUserManager(BaseUserManager):
     def _create_generic_user(self, email, username, password, first_name, last_name, user_type):
-        if not username:
-            raise ValueError("Username cannot be empty")
-        if not email:
-            raise ValueError("Email cannot be empty")
-        if not first_name:
-            raise ValueError("First name cannot be empty")
-        if not last_name:
-            raise ValueError("Last name cannot be empty")
-        if not password:
-            raise ValueError("Password cannot be empty")
-
         user = self.model(
             username=username,
             first_name=first_name,
             last_name=last_name,
             email=self.normalize_email(email),
             user_type=user_type,
-            is_staff=user_type == 0,
+            is_staff=user_type == UserType.ADMIN,
             is_active=False
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
-        
+
+
     def create_admin(self, email, username, password, first_name, last_name):
-        return self._create_generic_user(email, username, password, first_name, last_name, 0)
+        return self._create_generic_user(email, username, password, first_name, last_name, UserType.ADMIN)
         
     def create_monitor(self, email, username, password, first_name, last_name):
-        return self._create_generic_user(email, username, password, first_name, last_name, 100)
+        return self._create_generic_user(email, username, password, first_name, last_name, UserType.MONITOR)
 
     def create_atrisk(self, email, username, password, first_name, last_name):
-        return self._create_generic_user(email, username, password, first_name, last_name, 200)
+        return self._create_generic_user(email, username, password, first_name, last_name, UserType.ATRISK)
 
     def create_helper(self, email, username, password, first_name, last_name):
-        return self._create_generic_user(email, username, password, first_name, last_name, 201)
+        return self._create_generic_user(email, username, password, first_name, last_name, UserType.HELPER)
 
 class MyUser(AbstractBaseUser):
     objects = MyUserManager()
@@ -52,18 +54,12 @@ class MyUser(AbstractBaseUser):
         # managed = False
         db_table = 'user_entity'
 
-    ADMIN = 0
-    MONITOR = 100
-    ATRISK = 200
-    HELPER = 201
-    UNSPECIFIED = 25
-
     USER_TYPE_CHOICES = (
-        (ADMIN, 'admin'),
-        (MONITOR, 'monitor'),
-        (ATRISK, 'atRisk'),
-        (HELPER, 'helper'),
-        (UNSPECIFIED, 'unspecified'),
+        (UserType.ADMIN, 'admin'),
+        (UserType.MONITOR, 'monitor'),
+        (UserType.ATRISK, 'atRisk'),
+        (UserType.HELPER, 'helper'),
+        (UserType.UNSPECIFIED, 'unspecified'),
     )
     
     user_id = models.AutoField(primary_key=True, db_column='userId')
@@ -76,7 +72,7 @@ class MyUser(AbstractBaseUser):
     last_access = models.DateField(db_column='lastAccess', default=datetime.date.today)
     creation_date = models.DateTimeField(db_column='creationDate', default=timezone.now)
     last_update = models.DateField(db_column='lastUpdate', default=datetime.date.today)
-    user_type = models.IntegerField(db_column='userType', choices=USER_TYPE_CHOICES, blank=True, default=UNSPECIFIED)
+    user_type = models.IntegerField(db_column='userType', choices=USER_TYPE_CHOICES, blank=True, default=UserType.UNSPECIFIED)
     is_staff = models.BooleanField(db_column='isStaff', default=False)
     is_active = models.BooleanField(default=True, db_column='activeStatus')
 
@@ -99,7 +95,7 @@ class Ad(models.Model):#========================================================
     content = models.CharField(max_length=280, blank=True, null=True)
     creation_date = models.DateField(db_column='creationDate')
     last_update = models.DateTimeField(db_column='lastUpdate')
-    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': MyUser.HELPER})
+    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': UserType.HELPER})
 
     class Meta:
        # managed = False
@@ -134,7 +130,7 @@ class AdCategory(models.Model):#================================================
         unique_together = (('ad_id', 'subcategory_id'),)
 
 class AtRiskCategory(models.Model):#===============================================================> READY
-    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': MyUser.ATRISK}, primary_key=True)
+    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': UserType.ATRISK}, primary_key=True)
     subcategory_id = models.ForeignKey(SubCategory, models.DO_NOTHING, db_column='subCategoryId')
 
 
@@ -144,8 +140,8 @@ class AtRiskCategory(models.Model):#============================================
         unique_together = (('atrisk_id', 'subcategory_id'),)
 
 class AtRisksFavourite(models.Model):#===============================================================> READY
-    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': MyUser.ATRISK}, primary_key=True)
-    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', related_name='+', limit_choices_to={'user_type': MyUser.HELPER})
+    atrisk_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='atRiskId', limit_choices_to={'user_type': UserType.ATRISK}, primary_key=True)
+    helper_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='helperId', related_name='+', limit_choices_to={'user_type': UserType.HELPER})
     date_selected = models.DateField(db_column='dateSelected', blank=True, null=True)
 
     class Meta:
@@ -218,8 +214,8 @@ class CredentialProof(models.Model):#===========================================
         db_table = 'credential_proof'
 
 class HealthLog(models.Model):#===============================================================> READY
-    patient_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='userId', limit_choices_to={'user_type__in': (MyUser.HELPER, MyUser.ATRISK)}, primary_key=True)
-    monitor_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='monitorId',related_name='+', limit_choices_to={'user_type': MyUser.MONITOR})
+    patient_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='userId', limit_choices_to={'user_type__in': (UserType.HELPER, UserType.ATRISK)}, primary_key=True)
+    monitor_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='monitorId',related_name='+', limit_choices_to={'user_type': UserType.MONITOR})
 
     class Meta:
       #  managed = False
@@ -256,7 +252,7 @@ class HealthLogNote(models.Model):#=============================================
         db_table = 'health_log_note'
 
 class HelperCategory(models.Model):#===============================================================> READY
-    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': MyUser.HELPER}, primary_key=True)
+    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': UserType.HELPER}, primary_key=True)
     subcategory_id = models.ForeignKey(SubCategory, models.DO_NOTHING, db_column='subCategoryId')
 
     class Meta:
@@ -265,8 +261,8 @@ class HelperCategory(models.Model):#============================================
         unique_together = (('helper_id', 'subcategory_id'),)
 
 class HelpersFavourite(models.Model):#===============================================================> READY
-    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': MyUser.HELPER}, primary_key=True)
-    atrisk_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='atRiskId',related_name='+', limit_choices_to={'user_type': MyUser.ATRISK})
+    helper_id = models.OneToOneField(MyUser, models.DO_NOTHING, db_column='helperId', limit_choices_to={'user_type': UserType.HELPER}, primary_key=True)
+    atrisk_id = models.ForeignKey(MyUser, models.DO_NOTHING, db_column='atRiskId',related_name='+', limit_choices_to={'user_type': UserType.ATRISK})
     date_selected = models.DateField(db_column='dateSelected', blank=True, null=True)
 
     class Meta:
@@ -326,8 +322,8 @@ class Request(models.Model):#===================================================
     request_description = models.CharField(db_column='requestDescription', max_length=280, blank=True, null=True)
     expiration_date = models.DateField(db_column='expirationDate', blank=True, null=True)
     done = models.IntegerField(blank=True, null=True)
-    atrisk = models.ForeignKey(MyUser, models.DO_NOTHING, limit_choices_to={'user_type': MyUser.ATRISK})
-    helper = models.ForeignKey(MyUser, models.DO_NOTHING,related_name='+', limit_choices_to={'user_type': MyUser.HELPER})
+    atrisk = models.ForeignKey(MyUser, models.DO_NOTHING, limit_choices_to={'user_type': UserType.ATRISK})
+    helper = models.ForeignKey(MyUser, models.DO_NOTHING,related_name='+', limit_choices_to={'user_type': UserType.HELPER})
 
     class Meta:
       #  managed = False

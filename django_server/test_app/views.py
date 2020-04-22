@@ -1,13 +1,16 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django_rest_passwordreset.models import get_password_reset_token_expiry_time, ResetPasswordToken
 from django_rest_passwordreset.signals import reset_password_token_created
 from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from test_app.serializers import AdSerializer, AdCategorySerializer, AddressSerializer, AddressProofSerializer, AtRiskCategorySerializer, AtRisksFavouriteSerializer, CategorySerializer, CredentialSerializer, CredentialProofSerializer, HealthLogSerializer, HealthLogNoteSerializer, HelperCategorySerializer, HelpersFavouriteSerializer, ImageSerializer, LogNoteSerializer, NoteSerializer, NoteTypeSerializer, PaymentSerializer, PaymentProofSerializer, PdfSerializer, PdfTypeSerializer, RequestSerializer, RequestCategorySerializer, ReviewSerializer, SocialMediaSerializer, SubCategorySerializer, UserLogSerializer, UserNoteSerializer, MyUserSerializer, MyUserViewsetSerializer, CustomTokenSerializer
-from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, UserNote, MyUser
+from test_app.serializers import *
+from test_app.models import *
 from rest_framework import parsers, renderers, status
 from rest_framework.permissions import IsAuthenticated
 from django.core.mail import EmailMultiAlternatives
@@ -1137,20 +1140,37 @@ class MyUserCreateViewSet(ViewSet):
     """
     def list(self, request):
         queryset = MyUser.objects.order_by('pk')
-        serializer = MyUserViewsetSerializer(queryset, many=True)
+        serializer = MyUserSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def create(self, request):
-        serializer = MyUserViewsetSerializer(data=request.data)
+        serializer = MyUserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            #serializer.save()
+            if serializer.user_type == UserType.ATRISK.value:
+                MyUser.objects.create_atrisk(
+                        serializer.email,
+                        serializer.username,
+                        serializer.password,
+                        serializer.first_name,
+                        serializer.last_name
+                )
+            elif serializer.user_type == UserType.HELPER.value:
+                MyUser.objects.create_helper(
+                        serializer.email,
+                        serializer.username,
+                        serializer.password,
+                        serializer.first_name,
+                        serializer.last_name
+                )
+
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
     def retrieve(self, request, pk=None):
         queryset = MyUser.objects.all()
         item = get_object_or_404(queryset, pk=pk)
-        serializer = MyUserViewsetSerializer(item)
+        serializer = MyUserSerializer(item)
         return Response(serializer.data)
 
     def update(self, request, pk=None):
@@ -1158,7 +1178,7 @@ class MyUserCreateViewSet(ViewSet):
             item = MyUser.objects.get(pk=pk)
         except MyUser.DoesNotExist:
             return Response(status=404)
-        serializer = MyUserViewsetSerializer(item, data=request.data)
+        serializer = MyUserSerializer(item, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -1222,8 +1242,8 @@ class CustomPasswordResetView:
 
 class CustomPasswordTokenVerificationView(APIView):
     """
-      An Api View which provides a method to verifiy that a given pw-reset token is valid before actually confirming the
-      reset.
+    An Api View which provides a method to verifiy that a given pw-reset token is valid before actually confirming the
+    reset.
     """
     throttle_classes = ()
     permission_classes = ()

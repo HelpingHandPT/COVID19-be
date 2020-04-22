@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 # from user.models import USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH
 
 
+
 def validate_username(username):
     if len(username) < 5:
         raise ValidationError(

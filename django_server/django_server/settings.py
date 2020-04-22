@@ -84,7 +84,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # During devel
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'unstable_integration',    # to test locally using an empty db
+        'NAME': 'hh_develop',    # to test locally using an empty db
         'USER': 'root',
         'PASSWORD': '',
     }

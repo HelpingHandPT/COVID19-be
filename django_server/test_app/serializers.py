@@ -1,5 +1,9 @@
+from django.core.validators import EmailValidator
 from rest_framework.serializers import ModelSerializer
-from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, UserNote, MyUser
+from test_app.models import Ad, AdCategory, Address, AddressProof, AtRiskCategory, AtRisksFavourite, Category, \
+    Credential, CredentialProof, HealthLog, HealthLogNote, HelperCategory, HelpersFavourite, Image, LogNote, Note, \
+    NoteType, Payment, PaymentProof, Pdf, PdfType, Request, RequestCategory, Review, SocialMedia, SubCategory, UserLog, \
+    UserNote, MyUser, UserType
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.hashers import make_password
@@ -196,28 +200,20 @@ class UserNoteSerializer(ModelSerializer):
         model = UserNote
         fields = '__all__'
 
-class MyUserViewsetSerializer(ModelSerializer):
-
-    class Meta:
-        model = MyUser
-        fields = '__all__'
-
-    def validate_password(self, value: str) -> str:
-        """
-        Hash value passed by user.
-
-        :param value: password of a user
-        :return: a hashed version of the password
-        """
-        return make_password(value)
-
 '''
 FROM: USER APP
 '''
 class MyUserSerializer(serializers.ModelSerializer):
+    USER_TYPE_CHOICES = (
+        (UserType.ATRISK, 'atRisk'),
+        (UserType.HELPER, 'helper'),
+    )
+
+
     email = serializers.EmailField(
             required=True, # make sure email is provided
-            validators=[UniqueValidator(queryset=MyUser.objects.all())] # make sure email is unique
+            validators=[EmailValidator, UniqueValidator(queryset=MyUser.objects.all())], # make sure email is unique
+            max_length=100
             )
     username = serializers.CharField(
             required=True,
@@ -225,11 +221,11 @@ class MyUserSerializer(serializers.ModelSerializer):
             min_length=5,
             max_length=20
             )
-    password = serializers.CharField(
+    password = make_password(serializers.CharField(
             write_only=True,
             required=True,
             max_length=256
-            )
+            ))
     first_name = serializers.CharField(
             required=True,
             max_length=25
@@ -238,6 +234,14 @@ class MyUserSerializer(serializers.ModelSerializer):
             required=True,
             max_length=25
             )
+    user_type = serializers.ChoiceField(
+            required=True,
+            choices=USER_TYPE_CHOICES
+    )
+
+    class Meta:
+        model = MyUser
+        fields = ('user_id', 'email', 'username', 'password', 'first_name', 'last_name')
 
     def create_atrisk(self, validated_data):
         password = make_password(validated_data['password'])
@@ -245,10 +249,6 @@ class MyUserSerializer(serializers.ModelSerializer):
         validated_data['first_name'], validated_data['last_name'])
         return user
 
-
-    class Meta:
-        model = MyUser
-        fields = ('user_id', 'email', 'username', 'password', 'first_name', 'last_name')
 
 '''
 Password reset
